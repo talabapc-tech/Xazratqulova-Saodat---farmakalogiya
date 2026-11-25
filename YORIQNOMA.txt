@@ -1,0 +1,29 @@
+"Farmakologiya va retseptura asoslari" moduli - Raqamli ta'lim resursi (RTR)
+Muallif: Xazratqulova Saodat, Shahrisabz Abu Ali ibn Sino nomidagi jamoat salomatligi texnikumi
+Mutaxassislik: 50910208 - Hamshiralik ishi (90 soat)
+
+KOMPYUTERDA ISHGA TUSHIRISH
+1. Butun "Farmakologiya-RTR" papkasini fleshka yoki kompyuterga ko'chiring.
+2. "index.html" faylini Google Chrome, Microsoft Edge yoki Firefox brauzerida oching.
+3. Internet talab qilinmaydi.
+
+TELEFONDA ISHGA TUSHIRISH
+1. ZIP faylni telefonga yuklab oling va fayl menejerida arxivdan chiqaring.
+2. Papkadagi "index.html" faylini brauzerda oching.
+Eslatma: ZIP ichidan turib ochmang, avval arxivdan chiqaring.
+
+FOYDALANISH
+- Bosh sahifada 30 mavzu KMR'dagi 5 ta o'qitish natijasi bo'yicha guruhlangan.
+- Mavzu ichida: Ma'ruza, Sxema, Test, Lug'at, Savollar, Mashq, Baholash bo'limlari.
+- Pastki panel: Mavzular, Testlar (yakuniy test - 30 savol), Lug'at, Natijalar.
+- Interaktiv mashqlar: doza kalkulyatorlari, retsept trenajyori, saqlash sharoitlari va FEFO,
+  zahar-antidot, ABCDE algoritmi, anafilaktik shok.
+- Natijalar shu qurilmaning brauzerida saqlanadi.
+- Dozalar va hisob-kitoblar o'quv maqsadida; amalda dori faqat shifokor tayinlovi bilan qo'llaniladi.
+
+TARKIBI
+index.html            - bosh sahifa (dasturiy qobiq)
+assets/app.css        - dizayn (Samsung One UI uslubi)
+assets/app.js         - dastur
+assets/data.js        - modul va mavzular ma'lumoti (KMR bo'yicha)
+assets/topics/        - mavzular kontenti (f01 ... f30)
