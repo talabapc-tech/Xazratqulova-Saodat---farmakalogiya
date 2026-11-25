@@ -15,6 +15,28 @@ window.PSX = {
     hours: { jami: 90, nazariy: 20, amaliy: 40, mustaqil: 30 }
   },
 
+  /* Dorilar ma'lumotnomasi guruhlari (assets/drugs/*.js dagi "gi" maydoni) */
+  drug_groups: [
+    { n: "Narkotik analgetiklar", s: "Narkotik", c: "red" },
+    { n: "Nonarkotik analgetiklar va NYaQV", s: "NYaQV", c: "orange" },
+    { n: "Uxlatuvçi va tinçlantiruvçi vositalar", s: "Uxlatuvçi", c: "purple" },
+    { n: "Neyroleptiklar va antidepressantlar", s: "Neyroleptik", c: "purple" },
+    { n: "Narkoz va mahalliy anestetiklar", s: "Anestetik", c: "teal" },
+    { n: "Miorelaksantlar", s: "Miorelaksant", c: "teal" },
+    { n: "Xolinergik va adrenergik vositalar", s: "Xolin / adren", c: "blue" },
+    { n: "Antigipertenziv va vazodilatatorlar", s: "Bosim", c: "green" },
+    { n: "Yurak glikozidlari va antiaritmiklar", s: "Yurak", c: "red" },
+    { n: "Diuretiklar", s: "Diuretik", c: "blue" },
+    { n: "Nafas oliş tizimiga taʼsir qiluvçilar", s: "Nafas", c: "teal" },
+    { n: "Ovqat hazm tizimiga taʼsir qiluvçilar", s: "Hazm", c: "orange" },
+    { n: "Antibiotiklar va antibakterial vositalar", s: "Antibiotik", c: "green" },
+    { n: "Gormonlar va vitaminlar", s: "Gormon / vitamin", c: "purple" },
+    { n: "Antigistamin va glyukokortikoidlar", s: "Antigistamin", c: "orange" },
+    { n: "Gemostatiklar va antikoagulyantlar", s: "Gemostatik", c: "red" },
+    { n: "Antidotlar", s: "Antidot", c: "red" },
+    { n: "Infuzion eritmalar va elektrolitlar", s: "Eritma", c: "blue" }
+  ],
+
   /* KMR: o'qitiş natijalari (bo'limlar) */
   sections: [
     { n: 1, color: "blue",   title: "Dori şakllari, retseptura va dozalaş asoslarini qöllaydi hamda yuboriş yölini tanlaydi" },

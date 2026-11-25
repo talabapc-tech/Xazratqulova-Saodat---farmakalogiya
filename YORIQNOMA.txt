@@ -11,19 +11,33 @@ TELEFONDA ISHGA TUSHIRISH
 1. ZIP faylni telefonga yuklab oling va fayl menejerida arxivdan chiqaring.
 2. Papkadagi "index.html" faylini brauzerda oching.
 Eslatma: ZIP ichidan turib ochmang, avval arxivdan chiqaring.
+Sayt internetda (Vercel) joylangan bo'lsa, brauzer menyusidan "Ilovani o'rnatish" tanlansa,
+telefonga ilova sifatida o'rnatiladi.
 
-FOYDALANISH
-- Bosh sahifada 30 mavzu KMR'dagi 5 ta o'qitish natijasi bo'yicha guruhlangan.
-- Mavzu ichida: Ma'ruza, Sxema, Test, Lug'at, Savollar, Mashq, Baholash bo'limlari.
-- Pastki panel: Mavzular, Testlar (yakuniy test - 30 savol), Lug'at, Natijalar.
-- Interaktiv mashqlar: doza kalkulyatorlari, retsept trenajyori, saqlash sharoitlari va FEFO,
-  zahar-antidot, ABCDE algoritmi, anafilaktik shok.
-- Natijalar shu qurilmaning brauzerida saqlanadi.
-- Dozalar va hisob-kitoblar o'quv maqsadida; amalda dori faqat shifokor tayinlovi bilan qo'llaniladi.
+PASTKI PANEL
+- Mavzular: 30 mavzu, KMR'dagi 5 ta o'qitish natijasi bo'yicha.
+- Dorilar: 105 ta dori kartochkasi (guruhlar va qidiruv).
+- Testlar: mavzu testlari, yakuniy test (30 savol), imtihon rejimi.
+- Asboblar: retsept simulyatori, kalkulyatorlar, vaziyatli simulyator, dorilar o'yini,
+  imtihon, chop etiladigan blanklar, lug'at.
+- Natijalar: o'rganilgan mavzular, test natijalari, ko'rinish (yorug'/qorong'i).
+
+MAVZU ICHIDA
+Ma'ruza, Plakat, Sxema, Test, Lug'at, Savollar, Mashq, Baholash bo'limlari.
+Ma'ruza oxirida mavzuning Word (ma'ruza) va PowerPoint (taqdimot) fayllarini yuklab olish mumkin.
+Plakatni kattalashtirish, PNG qilib yuklab olish yoki chop etish mumkin.
+
+CHOP ETISH
+"Chop etish" tugmasidan so'ng printer o'rniga "PDF sifatida saqlash"ni tanlasangiz, PDF fayl hosil bo'ladi.
 
 TARKIBI
-index.html            - bosh sahifa (dasturiy qobiq)
-assets/app.css        - dizayn (Samsung One UI uslubi)
-assets/app.js         - dastur
-assets/data.js        - modul va mavzular ma'lumoti (KMR bo'yicha)
+index.html            - bosh sahifa
+manifest.webmanifest, sw.js - telefonga o'rnatish va oflayn ishlash
+assets/app.css, app.js, tools.js, data.js - dizayn va dastur
 assets/topics/        - mavzular kontenti (f01 ... f30)
+assets/posters/       - plakatlar (p01 ... p30)
+assets/drugs/         - dorilar ma'lumotnomasi
+assets/scenarios.js   - simulyator stsenariylari
+assets/docs/          - Word va PowerPoint fayllar (f01 ... f30)
+
+Dozalar va hisob-kitoblar o'quv maqsadida; amalda dori faqat shifokor tayinlovi bilan qo'llaniladi.

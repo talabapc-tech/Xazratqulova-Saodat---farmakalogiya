@@ -41,7 +41,7 @@
     if (loading[id]) return loading[id];
     loading[id] = new Promise(function (res) {
       var s = document.createElement('script');
-      s.src = 'assets/topics/' + id + '.js?v=3';
+      s.src = 'assets/topics/' + id + '.js?v=8';
       s.onload = function () { res(window.PSX_T[id] || null); };
       s.onerror = function () { delete loading[id]; res(null); };
       document.head.appendChild(s);
@@ -81,6 +81,7 @@
     if (h[0] === 'final') return renderFinal();
     if (h[0] === 'glossary') return renderGlossary();
     if (h[0] === 'profile') return renderProfile();
+    if (window.PSX_ROUTES && window.PSX_ROUTES[h[0]]) return window.PSX_ROUTES[h[0]](h.slice(1));
     renderHome();
   }
   window.addEventListener('hashchange', route);
@@ -122,7 +123,7 @@
   /* ======================================================
      MAVZU SAHIFASI
      ====================================================== */
-  var TABS = [['lec', 'Maʼruza'], ['sch', 'Sxema'], ['test', 'Test'], ['glo', 'Luğat'], ['rev', 'Savollar'], ['prac', 'Maşq'], ['crit', 'Baholaş']];
+  var TABS = [['lec', 'Maʼruza'], ['pos', 'Plakat'], ['sch', 'Sxema'], ['test', 'Test'], ['glo', 'Luğat'], ['rev', 'Savollar'], ['prac', 'Maşq'], ['crit', 'Baholaş']];
   function renderTopic(n, tab) {
     var t = TOPICS[n - 1];
     if (!t) { location.hash = '#/'; return; }
@@ -131,10 +132,12 @@
       '<div class="chips-wrap"><div class="chips" id="tchips"></div></div><div id="tabc"><div class="spinner"></div></div>' +
       '<div class="sub-h">Boşqa mavzular</div><div class="list">' + (n > 1 ? pagerRow(TOPICS[n - 2], 'Oldingi') : '') + (n < TOPICS.length ? pagerRow(TOPICS[n], 'Keyingi') : '') + '</div></div>';
     onScroll();
-    loadBlock(t.id).then(function (d) {
+    Promise.all([loadBlock(t.id), loadPoster(t.n)]).then(function (r) {
+      var d = r[0], poster = r[1];
       var el = $('#tabc'); if (!el) return;
       if (!d) { el.innerHTML = '<div class="empty">Mavzu materiallari hali yuklanmagan.</div>'; $('#tchips').innerHTML = ''; return; }
       var tabs = TABS.filter(function (x) {
+        if (x[0] === 'pos') return !!poster;
         if (x[0] === 'sch') return d.schemes && d.schemes.length;
         if (x[0] === 'prac') return t.inter.length || (d.cases && d.cases.length);
         if (x[0] === 'crit') return d.criteria && d.criteria.length;
@@ -147,7 +150,7 @@
         $$('.chip', chips).forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-tab') === name); });
         var on = $('.chip[aria-pressed="true"]', chips); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
         history.replaceState(null, '', '#/t/' + n + '/' + name);
-        ({ lec: tabLecture, sch: tabSchemes, test: tabTest, glo: tabGlossary, rev: tabReview, prac: tabPractice, crit: tabCriteria })[name](el, t, d);
+        ({ lec: tabLecture, pos: function (e, tt) { tabPoster(e, tt, poster); }, sch: tabSchemes, test: tabTest, glo: tabGlossary, rev: tabReview, prac: tabPractice, crit: tabCriteria })[name](el, t, d);
         var top = $('.chips-wrap').offsetTop - 56;
         if (window.scrollY > top) window.scrollTo(0, top);
       }
@@ -157,6 +160,28 @@
   }
   function pagerRow(t, label) { return '<a class="row c-' + t.color + '" href="#/t/' + t.n + '"><div class="ico">' + t.n + '</div><div class="grow"><div class="s" style="margin:0">' + label + '</div><div class="t">' + esc(t.title) + '</div></div>' + ic('chev', 'chev') + '</a>'; }
   function cardH(icon, title) { return '<h3><span class="dot">' + ic(icon) + '</span>' + title + '</h3>'; }
+
+  /* ---- Plakatlar (assets/posters/pNN.js) ---- */
+  function loadPoster(n) {
+    window.PSX_P = window.PSX_P || {};
+    var id = 'f' + pad(n);
+    if (window.PSX_P[id]) return Promise.resolve(window.PSX_P[id]);
+    return new Promise(function (res) {
+      var s = document.createElement('script');
+      s.src = 'assets/posters/p' + pad(n) + '.js?v=8';
+      s.onload = function () { res(window.PSX_P[id] || null); };
+      s.onerror = function () { res(null); };
+      document.head.appendChild(s);
+    });
+  }
+  function tabPoster(el, t, p) {
+    el.innerHTML = '<div class="scheme poster"><h3>' + rich(p.t) + '</h3><div class="svgbox" id="pbox" role="button" tabindex="0" aria-label="Kattalaştiriş">' + p.svg + '</div></div>' +
+      '<div class="btn-row"><button class="btn tonal" id="pPng">' + ic('download') + 'PNG yuklab oliş</button><button class="btn tonal" id="pPrint">' + ic('print') + 'Çop etiş</button></div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 8px 0">Plakatni kattalaştiriş uçun ustiga bosing. Plakatni çop etib, sinfda devorga osiş mumkin.</p>';
+    $('#pbox', el).onclick = function () { openViewer(p.svg, plain(p.t), true); };
+    $('#pPng', el).onclick = function () { svgPng($('#pbox svg', el), plain(p.t)); };
+    $('#pPrint', el).onclick = function () { printHtml(p.svg, false); };
+  }
 
   function tabLecture(el, t, d) {
     var h = '<div class="card">' + cardH('star', 'Maşğulot maqsadi') + '<p>' + rich(d.goal) + '</p></div>';
@@ -168,6 +193,7 @@
     var done = isRead(t);
     h += '<div class="btn-row"><button class="btn ' + (done ? 'gray' : 'green') + '" id="readBtn">' + (done ? '✓ Örganilgan (bekor qiliş)' : 'Öqib çiqdim') + '</button></div>';
     h += '<div class="btn-row"><button class="btn tonal" id="toTest">Bilimni sinaş: test</button></div>';
+    h += '<div class="card c-blue" style="margin-top:14px">' + cardH('download', 'Yuklab oliş') + '<p class="muted" style="font-size:14px">Maʼruza va taqdimotni qurilmaga saqlang, darsda ishlating.</p><div class="btn-row"><a class="btn tonal" href="assets/docs/' + t.id + '.docx" download>Word: maʼruza</a><a class="btn tonal" href="assets/docs/' + t.id + '.pptx" download>PowerPoint</a></div></div>';
     el.innerHTML = h;
     $('#readBtn').onclick = function () { setRead(t, !isRead(t)); tabLecture(el, t, d); };
     $('#toTest').onclick = function () { $('.chip[data-tab="test"]').click(); };
@@ -213,7 +239,7 @@
     }
     function finish() {
       var p = Math.round(right / qs.length * 100), g = grade(p);
-      if (onDone) onDone(p);
+      if (onDone) onDone(p, wrong, qs);
       el.innerHTML = '<div class="card result c-' + g[1] + '"><div class="gauge" style="--p:' + p + '"><div><b>' + p + '%</b><span>' + right + ' / ' + qs.length + '</span></div></div><h2>' + g[0] + '</h2><p class="muted">Taxminiy baho: ' + g[2] + '</p>' +
         '<div class="btn-row"><button class="btn" id="again">Qayta topşiriş</button></div></div>' +
         (wrong.length ? '<div class="sub-h">Xatolar ustida işlaş</div><div class="list">' + wrong.map(function (q) {
@@ -527,6 +553,7 @@
     var fb = get('final', null);
     view.innerHTML = '<div class="expanded"><h1>Testlar</h1><p>Mavzular böyiça va yakuniy test</p></div>' +
       '<div class="card c-blue">' + cardH('shuffle', 'Yakuniy test') + '<p class="muted">Barça 30 mavzudan tasodifiy 30 ta savol.' + (fb != null ? ' Eng yaxşi natija: <b style="color:var(--text)">' + fb + '%</b>' : '') + '</p><div class="btn-row"><a class="btn" href="#/final">Boşlaş</a></div></div>' +
+      '<div class="card c-green">' + cardH('clock', 'Imtihon rejimi') + '<p class="muted">30 ta savol (har mavzudan 1 ta), 40 daqiqa. Natija baho va bölimlar böyiça körsatiladi, xatolar saqlanadi.</p><div class="btn-row"><a class="btn green" href="#/exam">Imtihonga ötiş</a></div></div>' +
       P.sections.map(function (s) {
         return '<div class="list c-' + s.color + '"><div class="list-h"><span class="num">' + s.n + '</span><b>' + esc(s.title) + '</b></div>' + TOPICS.filter(function (t) { return t.sec === s; }).map(function (t) {
           var sc = getScore(t);
@@ -552,7 +579,7 @@
      LUG'AT
      ====================================================== */
   function renderGlossary() {
-    setTab('glossary'); setBar({ title: 'Luğat' });
+    setTab('tools'); setBar({ title: 'Luğat' });
     view.innerHTML = '<div class="expanded"><h1>Luğat</h1><p id="gcount">Yuklanmoqda…</p></div><div id="gl"><div class="spinner"></div></div>';
     onScroll();
     loadAll().then(function () {
@@ -613,8 +640,47 @@
   /* ======================================================
      KO'RIŞ OYNASI va DIALOG
      ====================================================== */
-  var viewer = $('#viewer'), vScroll = $('#viewerScroll');
-  function openViewer(svg, title) { vScroll.innerHTML = svg; $('#viewerTitle').textContent = title; viewer.hidden = false; document.body.style.overflow = 'hidden'; }
+  var viewer = $('#viewer'), vScroll = $('#viewerScroll'), vName = '';
+  function openViewer(svg, title, exp) {
+    vScroll.innerHTML = svg; $('#viewerTitle').textContent = title; vName = title;
+    $('#vPng').hidden = !exp; $('#vPrint').hidden = !exp;
+    viewer.hidden = false; document.body.style.overflow = 'hidden';
+  }
+  $('#vPng').onclick = function () { var s = $('svg', vScroll); if (s) svgPng(s, vName); };
+  $('#vPrint').onclick = function () { printHtml(vScroll.innerHTML, false); };
+
+  /* Çop etiş: tanlangan HTML/SVG ni alohida soha orqali çop etadi */
+  function printHtml(html, land) {
+    var a = $('#printArea'), st = $('#pageStyle');
+    a.innerHTML = html;
+    st.textContent = '@page{size:A4 ' + (land ? 'landscape' : 'portrait') + ';margin:10mm}';
+    document.body.classList.add('printing');
+    window.print();
+    setTimeout(function () { document.body.classList.remove('printing'); a.innerHTML = ''; }, 400);
+  }
+  /* SVG ni PNG rasm qilib yuklab oliş (CSS ranglari inline qilinadi) */
+  function svgPng(svg, name) {
+    var clone = svg.cloneNode(true), src = svg.querySelectorAll('*'), dst = clone.querySelectorAll('*');
+    var props = ['fill', 'stroke', 'stroke-width', 'font-size', 'font-weight', 'font-family', 'font-style', 'text-ançor', 'opacity', 'letter-spacing'];
+    for (var i = 0; i < src.length; i++) {
+      var cs = getComputedStyle(src[i]);
+      for (var k = 0; k < props.length; k++) dst[i].style.setProperty(props[k], cs.getPropertyValue(props[k]));
+    }
+    var vb = svg.viewBox.baseVal, sc = 2, w = vb.width * sc, h = vb.height * sc;
+    clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); clone.setAttribute('width', w); clone.setAttribute('height', h);
+    var img = new Image();
+    img.onload = function () {
+      var c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      c.toBlob(function (b) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(b); a.download = (name || 'plakat').replace(/[^\wÀ-ɏ-]+/g, '_') + '.png';
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 600);
+      }, 'image/png');
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone));
+  }
   function closeViewer() { if (!viewer.hidden) { viewer.hidden = true; document.body.style.overflow = ''; vScroll.innerHTML = ''; } }
   $('#viewerClose').onclick = closeViewer;
   var dlg = $('#sheet');
@@ -622,6 +688,17 @@
   function closeDlg() { dlg.hidden = true; }
   dlg.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeDlg(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeViewer(); closeDlg(); } });
+
+  /* Qo'şimça asboblar (assets/tools.js) uçun umumiy interfeys */
+  window.PSXAPP = {
+    P: P, M: M, view: view, TOPICS: TOPICS, WIDGETS: WIDGETS,
+    esc: esc, rich: rich, plain: plain, $: $, $$: $$, ic: ic, get: get, put: put, shuffle: shuffle, num: num, fmt: fmt, pad: pad,
+    runQuiz: runQuiz, prepQs: prepQs, grade: grade, flashcards: flashcards, orderTask: orderTask, casesWidget: casesWidget,
+    openDlg: openDlg, closeDlg: closeDlg, openViewer: openViewer, printHtml: printHtml, svgPng: svgPng,
+    setBar: setBar, setTab: setTab, onScroll: onScroll, cardH: cardH, stat: stat, termRow: termRow,
+    loadBlock: loadBlock, loadAll: loadAll, uzCmp: uzCmp, uzNorm: uzNorm, uzBare: uzBare
+  };
+  if (window.PSX_INIT) window.PSX_INIT(window.PSXAPP);
 
   route();
 })();

@@ -7,7 +7,9 @@
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <title>Farmakologiya va retseptura asoslari</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%233E7BFA'/%3E%3Crect x='14' y='26' width='36' height='14' rx='7' fill='white' transform='rotate(-35 32 33)'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/app.css?v=3">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="stylesheet" href="assets/app.css?v=8">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -32,6 +34,11 @@
     <symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1-4 4-6 7.5-6s6.5 2 7.5 6"/></symbol>
     <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3 7h4c4 0 6 10 10 10h4M3 17h4c1.6 0 2.8-1.6 3.9-3.5M13.1 10.5C14.2 8.6 15.4 7 17 7h4M18 4l3 3-3 3M18 14l3 3-3 3"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5h.01"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9M7 17H4.5v-8h15v8H17"/><rect x="7" y="14" width="10" height="6.5" rx="1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 11l4.5 4.5 4.5-4.5M5 20h14"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5.5 3.5-5.5 3.5z"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.8"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.8"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.8"/></symbol>
   </defs>
 </svg>
 
@@ -47,13 +54,14 @@
 
 <nav class="bnav" id="bnav">
   <a href="#/" data-tab="home"><i><svg><use href="#i-pill"/></svg></i><span>Mavzular</span></a>
+  <a href="#/drugs" data-tab="drugs"><i><svg><use href="#i-box"/></svg></i><span>Dorilar</span></a>
   <a href="#/tests" data-tab="tests"><i><svg><use href="#i-check"/></svg></i><span>Testlar</span></a>
-  <a href="#/glossary" data-tab="glossary"><i><svg><use href="#i-abc"/></svg></i><span>Luğat</span></a>
+  <a href="#/tools" data-tab="tools"><i><svg><use href="#i-grid"/></svg></i><span>Asboblar</span></a>
   <a href="#/profile" data-tab="profile"><i><svg><use href="#i-chart"/></svg></i><span>Natijalar</span></a>
 </nav>
 
 <div class="viewer" id="viewer" hidden>
-  <div class="viewer-bar"><span id="viewerTitle"></span><button class="viewer-close" id="viewerClose" aria-label="Yopish"><svg><use href="#i-x"/></svg></button></div>
+  <div class="viewer-bar"><span id="viewerTitle"></span><span class="viewer-acts"><button class="viewer-close" id="vPng" aria-label="PNG yuklab olish" hidden><svg><use href="#i-download"/></svg></button><button class="viewer-close" id="vPrint" aria-label="Chop etish" hidden><svg><use href="#i-print"/></svg></button><button class="viewer-close" id="viewerClose" aria-label="Yopish"><svg><use href="#i-x"/></svg></button></span></div>
   <div class="viewer-scroll" id="viewerScroll"></div>
 </div>
 
@@ -62,7 +70,11 @@
   <div class="dlg" role="dialog" aria-modal="true"><div id="sheetBody"></div></div>
 </div>
 
-<script src="assets/data.js?v=3"></script>
-<script src="assets/app.js?v=3"></script>
+<div id="printArea"></div>
+<style id="pageStyle"></style>
+
+<script src="assets/data.js?v=8"></script>
+<script src="assets/tools.js?v=8"></script>
+<script src="assets/app.js?v=8"></script>
 </body>
 </html>
